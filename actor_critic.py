@@ -165,7 +165,8 @@ if __name__ == '__main__':
         env.env.set_subgoals(subgoals)
     
     if "Shaping" in args.env_id:
-        subgoals = [54, 87]
+        subgoals = [25, 51, 62, 88] # hall ways
+        # subgoals = [62, 88] # horizon
         shaping_reward = ShapingReward(1.0, args.discount, subgoals)
         env.env.set_shaping_reward(shaping_reward)
 
