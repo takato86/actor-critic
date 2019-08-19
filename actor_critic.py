@@ -14,6 +14,7 @@ from entity.tabular import Tabular
 from entity.sg_parser import parser
 from entity.policy import EgreedyPolicy, SoftmaxPolicy, FixedActionPolicy
 from entity.termination import OneStepTermination
+from entity.reward import ShapingReward
 import matplotlib.pyplot as plt
 
 '''
@@ -162,6 +163,11 @@ if __name__ == '__main__':
             for row in dict_reader:
                 subgoals[int(float(row['state1']))] = 5e-4
         env.env.set_subgoals(subgoals)
+    
+    if "Shaping" in args.env_id:
+        subgoals = [54, 87]
+        shaping_reward = ShapingReward(1.0, args.discount, subgoals)
+        env.env.set_shaping_reward(shaping_reward)
 
     for run in range(args.nruns):
         rng = np.random.RandomState(run)
@@ -234,8 +240,7 @@ if __name__ == '__main__':
                                                 "analysis",
                                                 file_name),
                            policy)
-            
-        
+
         with open(os.path.join("res", "steps", f"{args.env_id}-{run}-steps.csv"), 'w') as f:
             f.write('\n'.join(list(map(str,steps))))
         # plt.plot(list(range(len(steps))), steps)
