@@ -105,6 +105,7 @@ class HumanSubgoalTransfer:
         rmse = (rmse/len(states))**0.5
         print("rmse: {}, mae: {}".format(rmse, mae))
 
+
 def load_landmarks_from_csv(file_path):
     landmarks_df = pd.read_csv(file_path)
     landmarks = []
@@ -125,6 +126,13 @@ def export_analysis_report(file_path, policy):
         export_lines.append(f"exploit: {policy.exploit_count},\
 explore: {policy.explore_count}\n")
         f.writelines(export_lines)
+        
+def export_state_values(file_path, env, policy):
+    import pdb; pdb.set_trace()
+    state_values = policy.get_values(env).tolist()
+    with open(file_path, 'w', encoding='utf-8') as f:
+        for state_value in state_values:
+            f.write(",".join(list(map(str, state_value))) + "\n")
 
 if __name__ == '__main__':
     parser.add_argument('--ac', action='store_true')
@@ -230,7 +238,7 @@ if __name__ == '__main__':
                 export_analysis_report(os.path.join("res",
                                                 "analysis",
                                                 file_name),
-                           policy)
+                                       policy)
                 policy.reset_count()
             elif episode == 1999:
 
@@ -239,8 +247,9 @@ if __name__ == '__main__':
                 export_analysis_report(os.path.join("res",
                                                 "analysis",
                                                 file_name),
-                           policy)
+                                       policy)
 
+        export_state_values(os.path.join("res", f"{args.env_id}-{run}-values.csv"), env_to_wrap, policy)
         with open(os.path.join("res", "steps", f"{args.env_id}-{run}-steps.csv"), 'w') as f:
             f.write('\n'.join(list(map(str,steps))))
         # plt.plot(list(range(len(steps))), steps)

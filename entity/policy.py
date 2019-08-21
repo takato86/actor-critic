@@ -50,6 +50,16 @@ class SoftmaxPolicy:
         self.exploit_count = 0
         self.explore_count = 0
 
+    def get_values(self, env):
+        state_values = np.zeros(env.env.occupancy.shape)
+        for state in range(len(self.weights)):
+            values = self.value([state])
+            percents = self.pmf([state])
+            value = np.dot(values, percents)
+            cell = env.env.to_cell(state)
+            state_values[cell[0]][cell[1]] = value
+        return state_values
+
 class PolicyOverOptions:
     def __init__(self, policy, initiation_sets):
         self.policy = policy
@@ -70,6 +80,15 @@ class PolicyOverOptions:
         cand_pmf = [pmf[option] for option in candidates]
         cand_pmf = cand_pmf/sum(cand_pmf)
         return int(self.policy.rng.choice(candidates, p=cand_pmf))
+
+    def get_values(self):
+        state_values = []
+        for state in range(len(self.policy.weights)):
+            values = self.value(state)
+            percents = self.pmf(state)
+            value = np.dot(values, percents)
+            state_values.append(value)
+        return state_values
 
 class FixedActionPolicy:
     def __init__(self, action, nactions):
