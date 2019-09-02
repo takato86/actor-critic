@@ -39,8 +39,10 @@ def main():
         plt.plot(list(range(n_episodes)), mean_y[i], label=file_pattern)
         plt.legend()
         # plt.show()
-        plt.savefig(file_path.split('/')[-1] + '.png')
-        plt.close()
+        plt.ylim(0, 1000)
+    plt.savefig(file_path.split('/')[-1] + '.png')
+    print(file_path.split('/')[-1] + '.png')
+    plt.close()
     plot_state_values("res/Fourrooms-v0-0-values.csv")
 
 if __name__ == "__main__":
