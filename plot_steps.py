@@ -5,8 +5,12 @@ import sys
 import pandas as pd
 import seaborn as sns
 import numpy as np
+import os
+
 
 def plot_state_values(file_path):
+    if not os.path.exists(file_path):
+        return
     plt.figure()
     state_values = []
     with open(file_path, 'r', encoding="utf-8") as f:
@@ -37,11 +41,13 @@ def main():
                     mean_y[i][step] = 1/(1+run) * (run * mean_y[i][step] + int(row[0]))
                     sum_y[i][step] += int(row[0])
         plt.plot(list(range(n_episodes)), mean_y[i], label=file_pattern)
-        plt.legend()
-        # plt.show()
-        plt.ylim(0, 1000)
+    plt.legend()
+    plt.ylim(0, 1000)
     plt.savefig(file_path.split('/')[-1] + '.png')
     print(file_path.split('/')[-1] + '.png')
+    plt.legend()
+    # plt.show()
+    plt.savefig(file_path.split('/')[-1] + '.png')
     plt.close()
     plot_state_values("res/Fourrooms-v0-0-values.csv")
 
