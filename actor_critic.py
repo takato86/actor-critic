@@ -128,7 +128,6 @@ explore: {policy.explore_count}\n")
         f.writelines(export_lines)
         
 def export_state_values(file_path, env, policy):
-    import pdb; pdb.set_trace()
     state_values = policy.get_values(env).tolist()
     with open(file_path, 'w', encoding='utf-8') as f:
         for state_value in state_values:
