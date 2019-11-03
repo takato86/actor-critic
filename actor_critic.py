@@ -172,10 +172,21 @@ if __name__ == '__main__':
         env.env.set_subgoals(subgoals)
     
     if "Shaping" in args.env_id:
-        subgoals = [25, 51, 62, 88] # hall ways
+        state_values = []
+        subgoal_values = {}
+        with open("res/Fourrooms-v0-0-values.csv", "r", encoding='utf-8') as f:
+            reader = csv.reader(f)
+            for row in reader:
+                state_values.append(row)
+        for i, row_state_values in enumerate(state_values):
+            for j, state_value in enumerate(row_state_values):
+                if env_to_wrap.env.tostate.get((i, j)) is not None:
+                    subgoal_values[env_to_wrap.env.tostate[(i, j)]] = float(state_value)
+        # import pdb; pdb.set_trace()
+        # subgoal_values = {25:0.5, 51:0.5, 62:1.0, 88:1.0} # hall ways
         # subgoals = [62, 88] # horizon
-        shaping_reward = ShapingReward(1.0, args.discount, subgoals)
-        env.env.set_shaping_reward(shaping_reward)
+        shaping_reward = ShapingReward(args.discount, subgoal_values)
+        env_to_wrap.env.set_shaping_reward(shaping_reward)
 
     for run in range(args.nruns):
         rng = np.random.RandomState(run)
